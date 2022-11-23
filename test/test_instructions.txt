@@ -1,0 +1,320 @@
+# 对数据库中的相关表生成元数据, 如果data_db_tables为空则是对所有的表生成元数据
+curl -v -H "app-id:fimatrix" -H "app-token:fimatrix2020" -H "x-uid: 9" \
+-H "content-type: application/json" -d \
+'{
+  "if_select_fields": {
+    "trade_date": {"origin_name": "日期", "data_type": "datetime", "kind": "main_time", "unit": null, "period": null},
+  },
+  "if_traits": {
+    "db_id": 1,
+    "table_name": "tbl_cbond_daily",
+    "data_category": "cnbond",
+    "description": "test",
+    "data_attr_kind": "timeseries",
+    "has_object_field": "yes",
+    "data_object": "",
+    "data_object_field": "code",
+    "main_time_field": "trade_date",
+    "time_fmt": ""
+  }
+}' \
+http://localhost:4030/dp/index/dbt/index_table_with_traits
+
+curl -v -H "app-id:fimatrix" -H "app-token:fimatrix2020" -H "x-uid: 9" \
+-H "content-type: application/json" -d \
+'{
+  "if_select_fields": {
+    "date": {"origin_name": "日期", "data_type": "datetime", "kind": "main_time", "unit": null, "period": null},
+  },
+  "if_traits": {
+    "db_id": 1,
+    "table_name": "tbl_rate_shibor",
+    "data_category": "cnrate",
+    "data_object": "shibor",
+    "data_attr_kind": "timeseries",
+    "main_time_field": "date"
+  }
+}' \
+http://localhost:4030/dp/index/dbt/index_table_with_traits
+
+curl -v -H "app-id:fimatrix" -H "app-token:fimatrix2020" -H "x-uid: 9" \
+-H "content-type: application/json" -d \
+'{
+  "db_id": 1,
+  "data_category": "cnbond",
+  "data_tables": ["tbl_cbond_daily", "tbl_cbond_issue", "tbl_cbond_list"]
+}' \
+http://localhost:4030/dp/index/dbt/index_tables
+
+#############################################
+
+# 对数据库中的相关表生成元数据, 如果data_db_tables为空则是对所有的表生成元数据
+curl -v -H "app-id:fimatrix" -H "app-token:fimatrix2020" -H "x-uid: 9" \
+-H "content-type: application/json" -d \
+'{
+    "uid": "9",
+    "api_id": 1,
+    "data_category": "test_abc",
+    "api_if_name": "stock_basic",
+    "api_if_desc": null,
+    "api_if_params": [
+        []
+    ],
+    "api_if_fields": [
+        {
+            "data_type": "string",
+            "desc": "TS代码",
+            "dtype_kind": "object_name",
+            "field": "ts_code",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "string",
+            "desc": "股票代码",
+            "dtype_kind": "object_attr",
+            "field": "symbol",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "string",
+            "desc": "股票名称",
+            "dtype_kind": "object_attr",
+            "field": "name",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "地域",
+            "dtype_kind": "object_attr",
+            "field": "area",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "所属行业",
+            "dtype_kind": "object_attr",
+            "field": "industry",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "string",
+            "desc": "股票全称",
+            "dtype_kind": "object_attr",
+            "field": "fullname",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "string",
+            "desc": "英文全称",
+            "dtype_kind": "object_attr",
+            "field": "enname",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "string",
+            "desc": "拼音缩写",
+            "dtype_kind": "object_attr",
+            "field": "cnspell",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "市场类型（主板/创业板/科创板/CDR）",
+            "dtype_kind": "object_attr",
+            "field": "market",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "交易所代码",
+            "dtype_kind": "object_attr",
+            "field": "exchange",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "交易货币",
+            "dtype_kind": "object_attr",
+            "field": "curr_type",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "上市状态 L上市 D退市 P暂停上市",
+            "dtype_kind": "object_attr",
+            "field": "list_status",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "datetime",
+            "desc": "上市日期",
+            "dtype_kind": "object_attr",
+            "field": "list_date",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "datetime",
+            "desc": "退市日期",
+            "dtype_kind": "object_attr",
+            "field": "delist_date",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "是否沪深港通标的，N否 H沪股通 S深股通",
+            "dtype_kind": "object_attr",
+            "field": "is_hs",
+            "is_timeseries": false
+        }
+    ],
+    "api_if_traits": {
+        "data_attr_kind": "object_list",
+        "data_object": null,
+        "data_object_field": "ts_code",
+        "has_object_field": true,
+        "short_name": "stock_basic",
+        "ts_time_field": null,
+        "ts_time_fmt": null
+    },
+    "api_dft_params": null,
+    "api_dft_fields": ""
+  }' \
+http://localhost:4030/dp/index/api/add_if
+
+curl -v -H "app-id:fimatrix" -H "app-token:fimatrix2020" -H "x-uid: 9" \
+-H "content-type: application/json" -d \
+'{
+    "uid": "9",
+    "api_id": 1,
+    "data_category": "test_abc",
+    "api_if_name": "stock_basic",
+    "api_if_desc": null,
+    "api_if_params": [
+        []
+    ],
+    "api_if_fields": [
+        {
+            "data_type": "string",
+            "desc": "TS代码",
+            "dtype_kind": "object_name",
+            "field": "ts_code",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "string",
+            "desc": "股票代码",
+            "dtype_kind": "object_attr",
+            "field": "symbol",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "string",
+            "desc": "股票名称",
+            "dtype_kind": "object_attr",
+            "field": "name",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "地域",
+            "dtype_kind": "object_attr",
+            "field": "area",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "所属行业",
+            "dtype_kind": "object_attr",
+            "field": "industry",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "string",
+            "desc": "股票全称",
+            "dtype_kind": "object_attr",
+            "field": "fullname",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "string",
+            "desc": "英文全称",
+            "dtype_kind": "object_attr",
+            "field": "enname",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "string",
+            "desc": "拼音缩写",
+            "dtype_kind": "object_attr",
+            "field": "cnspell",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "市场类型（主板/创业板/科创板/CDR）",
+            "dtype_kind": "object_attr",
+            "field": "market",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "交易所代码",
+            "dtype_kind": "object_attr",
+            "field": "exchange",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "交易货币",
+            "dtype_kind": "object_attr",
+            "field": "curr_type",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "上市状态 L上市 D退市 P暂停上市",
+            "dtype_kind": "object_attr",
+            "field": "list_status",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "datetime",
+            "desc": "上市日期",
+            "dtype_kind": "object_attr",
+            "field": "list_date",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "datetime",
+            "desc": "退市日期",
+            "dtype_kind": "object_attr",
+            "field": "delist_date",
+            "is_timeseries": false
+        },
+        {
+            "data_type": "enum",
+            "desc": "是否沪深港通标的，N否 H沪股通 S深股通",
+            "dtype_kind": "object_attr",
+            "field": "is_hs",
+            "is_timeseries": false
+        }
+    ],
+    "api_if_traits": {
+        "data_attr_kind": "object_list",
+        "data_object": null,
+        "data_object_field": "ts_code",
+        "has_object_field": true,
+        "short_name": "stock_basic",
+        "ts_time_field": null,
+        "ts_time_fmt": null
+    },
+    "api_dft_params": null,
+    "api_dft_fields": "",
+    "updating_api_params": [],
+    "adding_api_params": [],
+    "removing_api_params": [],
+    "updating_api_fields": [],
+    "adding_api_fields": [],
+    "removing_api_fields": []
+}' \
+http://localhost:4030/dp/index/api/update_if

@@ -48,3 +48,12 @@ Thumbs.db
 *.mov
 *.wmv
 
+# go mod tmp file
+go.sum
+
+# vim swap file
+*.swp
+*.swo
+
+# target dir
+bin

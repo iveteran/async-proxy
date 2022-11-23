@@ -1,0 +1,49 @@
+[server]
+	Host = "https://matrix.works"
+	ListenAddress = "127.0.0.1"
+	ListenPort = 4035
+	LogFile = "fap.log"
+
+	SysTimeForm = "2004-08-01 15:04:05"   # 时间转换格式
+	SysDateForm = "2004-08-01"       # 日期转换格式
+	SysTimeZone = "Asia/Shanghai"
+
+	SignSecret = "20190612Shenzhen"
+	CookieSecret = "fimatrix"
+
+	AppId = "fimatrix"
+	AppToken = "fimatrix2020"
+
+[redises]
+  [redises.mq]
+		host = "127.0.0.1"
+		port = 6600
+		database = 3
+
+[MQ]
+  ConnectionName = "fap"
+  [MQ.DefaultQueue]
+    Name = "fap_default"
+    UnackedLimit = 10
+    NumConsumers = 1
+    MessageTTL = 60
+  [MQ.TopicQueues]
+    [MQ.TopicQueues.fap_demo]
+      UnackedLimit = 20
+      NumConsumers = 2
+      MessageTTL = 120
+      Backend = "http://localhost:8080/"
+
+[Backends]
+  AppId = "fimatrix"
+  AppToken = "fimatrix2020"
+  [Backends.fap_demo]
+    Host = "http://localhost:8080/"
+    AppId = "fimatrix"
+    AppToken = "fimatrix2020"
+
+[ReportApis]
+  [ReportApis.fdtx]
+    Url = "http://localhost:4033/dp/fdtx/update_status"
+    Method = "GET"
+    Args = "status=?"
