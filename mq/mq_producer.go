@@ -58,7 +58,7 @@ func (this *MqProducer) Enqueue(
 	}
 	if this.mq == nil {
 		topicList := getTopicList()
-		topicList = append(topicList, defaultQueue)
+		// topicList = append(topicList, defaultQueue) NOTE: already appended at mq_consumer.go::Init
 		this.mq = createMQs(conf.Cfg.Mq.ConnectionName, topicList...)
 	}
 
