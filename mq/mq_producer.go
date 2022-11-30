@@ -19,7 +19,7 @@ func NewMqProducer() *MqProducer {
 	return &MqProducer{}
 }
 
-func createMQs(mqConnName string, routeList ...string) *mq.ProducerCreator {
+func createMQs(mqConnName string, topicList ...string) *mq.ProducerCreator {
 	if _, exist := conf.Cfg.Redises["mq"]; !exist {
 		log.Fatal("[createMQs] Error: The configure of MQ does not exist")
 		return nil
@@ -34,8 +34,8 @@ func createMQs(mqConnName string, routeList ...string) *mq.ProducerCreator {
 		log.Fatal("[createMQs] Error: The configure of MQ does not exist")
 		return nil
 	}
-	log.Printf("[createMQs] Create MQs [%s] %+v\n", mqConnName, routeList)
-	mq.Create(mqConnName, routeList)
+	log.Printf("[createMQs] Create MQs [%s] %+v\n", mqConnName, topicList)
+	mq.Create(mqConnName, topicList)
 
 	CleanupStale(mq)
 
