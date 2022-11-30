@@ -42,6 +42,12 @@
     AppId = "fimatrix"
     AppToken = "fimatrix2020"
 
+[RouteTable]
+  "/dp/dbt" = "http://localhost:4031/"    # database data table indexer (dbt_indexer)
+  "/dp/dapi" = "http://localhost:4032/"   # 3rd data api data indexer (dapi_indexer)
+  "/dp/fdtx" = "http://localhost:4033/"   # file data table extractor (fdt_extractor)
+  "/dp/fdt" = "http://localhost:4034/"    # file data table indexer (fdt_indexer)
+
 [ReportApis]
   [ReportApis.fdtx]
     Url = "http://localhost:4033/dp/fdtx/update_status"

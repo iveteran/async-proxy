@@ -45,7 +45,7 @@ type Backends struct {
 type MyConfig struct {
 	conf.FmxConfig
 	Mq         MqInfo
-	Backends   Backends
+	RouteTable map[string]string
 	ReportApis map[string]StatusReportApi
 }
 

@@ -12,7 +12,7 @@ type RequestHandler func(http.ResponseWriter, *http.Request)
 
 var mqProducer *mq.MqProducer
 
-func proxyHandler() RequestHandler {
+func proxyHandler(rtBackend string) RequestHandler {
 	return func(w http.ResponseWriter, r *http.Request) {
 		requestId := r.Header.Get("X-REQUEST-ID")
 		if requestId != "" {
@@ -20,8 +20,11 @@ func proxyHandler() RequestHandler {
 		}
 
 		backend := r.Header.Get("PROXY-BACKEND")
+		if backend == "" && rtBackend != "" {
+			backend = rtBackend
+		}
 		if backend == "" {
-			conf.Logger.Println("Can not get backend from request header")
+			conf.Logger.Println("Can not get backend for this request")
 			w.WriteHeader(421) // 421 Misdirected Request
 			return
 		}
@@ -41,7 +44,17 @@ func proxyHandler() RequestHandler {
 	}
 }
 
-func SetupProxyHandlers() {
-	mqProducer = mq.NewMqProducer()
-	http.Handle("/", http.HandlerFunc(proxyHandler()))
+func SetupProxyHandlers(routeMap map[string]string) {
+	backend := ""
+	http.Handle("/", http.HandlerFunc(proxyHandler(backend)))
+
+	for pathPrefix, backend := range routeMap {
+		http.Handle(pathPrefix, http.HandlerFunc(proxyHandler(backend)))
+		pathLen := len(pathPrefix)
+		if pathPrefix[pathLen-1] == '/' {
+			http.Handle(pathPrefix[:pathLen-1], http.HandlerFunc(proxyHandler(backend)))
+		} else {
+			http.Handle(pathPrefix+"/", http.HandlerFunc(proxyHandler(backend)))
+		}
+	}
 }
