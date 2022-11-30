@@ -12,6 +12,10 @@ type RequestHandler func(http.ResponseWriter, *http.Request)
 
 var mqProducer *mq.MqProducer
 
+func init() {
+	mqProducer = mq.NewMqProducer()
+}
+
 func proxyHandler(rtBackend string) RequestHandler {
 	return func(w http.ResponseWriter, r *http.Request) {
 		requestId := r.Header.Get("X-REQUEST-ID")
