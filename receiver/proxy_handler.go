@@ -12,7 +12,7 @@ type RequestHandler func(http.ResponseWriter, *http.Request)
 
 var mqProducer *mq.MqProducer
 
-func messageHandler() RequestHandler {
+func proxyHandler() RequestHandler {
 	return func(w http.ResponseWriter, r *http.Request) {
 		requestId := r.Header.Get("X-REQUEST-ID")
 		if requestId != "" {
@@ -41,7 +41,7 @@ func messageHandler() RequestHandler {
 	}
 }
 
-func SetupMessageHandlers() {
+func SetupProxyHandlers() {
 	mqProducer = mq.NewMqProducer()
-	http.Handle("/", http.HandlerFunc(messageHandler()))
+	http.Handle("/", http.HandlerFunc(proxyHandler()))
 }

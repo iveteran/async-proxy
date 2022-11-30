@@ -23,7 +23,8 @@ func newApp(appName, appOwner, version, buildNo string) *bootstrap.FapBootstrapp
 
 func Startup(appName, appOwner, version, buildNo string) {
 	app := newApp(appName, appOwner, version, buildNo)
-	SetupMessageHandlers()
+
+	SetupProxyHandlers()
 
 	addr := fmt.Sprintf("%s:%d", conf.Cfg.Server.ListenAddress, conf.Cfg.Server.ListenPort)
 	err := app.Serve(addr)
