@@ -1,18 +1,18 @@
 [server]
 	Host = "https://matrix.works"
 	ListenAddress = "127.0.0.1"
-	ListenPort = 4035
+	ListenPort = 40000
 	LogFile = "fap.log"
 
 	SysTimeForm = "2004-08-01 15:04:05"   # 时间转换格式
 	SysDateForm = "2004-08-01"       # 日期转换格式
 	SysTimeZone = "Asia/Shanghai"
 
-	SignSecret = "20190612Shenzhen"
-	CookieSecret = "fimatrix"
+	SignSecret = "*********"
+	CookieSecret = "??????????"
 
-	AppId = "fimatrix"
-	AppToken = "fimatrix2020"
+	AppId = "self-app-id"
+	AppToken = "self-app-token"
 
 [redises]
   [redises.mq]
@@ -35,18 +35,16 @@
       Backend = "http://localhost:8080/"
 
 [Backends]
-  AppId = "fimatrix"
-  AppToken = "fimatrix2020"
+  AppId = "self-app-id"
+  AppToken = "self-app-token"
   [Backends.fap_demo]
     Host = "http://localhost:8080/"
-    AppId = "fimatrix"
-    AppToken = "fimatrix2020"
+    AppId = "your-app-id"
+    AppToken = "your-app-token"
 
 [RouteTable]
   "/dp/dbt" = "http://localhost:4031/"    # database data table indexer (dbt_indexer)
   "/dp/dapi" = "http://localhost:4032/"   # 3rd data api data indexer (dapi_indexer)
-  "/dp/fdtx" = "http://localhost:4033/"   # file data table extractor (fdt_extractor)
-  "/dp/fdt" = "http://localhost:4034/"    # file data table indexer (fdt_indexer)
 
 [ReportApis]
   [ReportApis.fdtx]

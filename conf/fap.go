@@ -2,13 +2,9 @@ package conf
 
 import (
 	"log"
-
-	"matrix.works/fmx-common/conf"
 )
 
-var Logger *log.Logger
-
-var Cfg *MyConfig
+var Cfg *FapConfig
 
 type StatusReportApi struct {
 	Url    string
@@ -42,21 +38,21 @@ type Backends struct {
 	Backends map[string]BackendInfo
 }
 
-type MyConfig struct {
-	conf.FmxConfig
+type FapConfig struct {
+	Config
 	Mq         MqInfo
 	RouteTable map[string]string
 	ReportApis map[string]StatusReportApi
 }
 
-func CreateGlobalConfig(filename string, logger *log.Logger) *MyConfig {
-	Cfg = &MyConfig{
-		FmxConfig: conf.FmxConfig{
+func CreateGlobalConfig(filename string, logger *log.Logger) *FapConfig {
+	Cfg = &FapConfig{
+		Config: Config{
 			FilePath: filename,
 		},
 	}
-	conf.Cfg = &Cfg.FmxConfig
-	conf.LoadConfig(filename, Cfg, logger)
-	conf.CheckRequiredOptions()
+	BaseCfg = &Cfg.Config
+	LoadConfig(filename, Cfg, logger)
+	CheckRequiredOptions()
 	return Cfg
 }

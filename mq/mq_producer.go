@@ -7,19 +7,18 @@ import (
 
 	"github.com/google/uuid"
 
-	"matrix.works/fmx-async-proxy/conf"
-	"matrix.works/fmx-common/mq"
+	"matrix.works/async-proxy/conf"
 )
 
 type MqProducer struct {
-	mq *mq.ProducerCreator
+	mq *ProducerCreator
 }
 
 func NewMqProducer() *MqProducer {
 	return &MqProducer{}
 }
 
-func createMQs(mqConnName string, topicList ...string) *mq.ProducerCreator {
+func createMQs(mqConnName string, topicList ...string) *ProducerCreator {
 	if _, exist := conf.Cfg.Redises["mq"]; !exist {
 		log.Fatal("[createMQs] Error: The configure of MQ does not exist")
 		return nil
@@ -29,7 +28,7 @@ func createMQs(mqConnName string, topicList ...string) *mq.ProducerCreator {
 	port := redisMQ.Port
 	db := redisMQ.Database
 
-	mq, err := mq.NewProducerCreator(host, port, db)
+	mq, err := NewProducerCreator(host, port, db)
 	if err != nil {
 		log.Fatal("[createMQs] Error: The configure of MQ does not exist")
 		return nil
@@ -42,7 +41,7 @@ func createMQs(mqConnName string, topicList ...string) *mq.ProducerCreator {
 	return mq
 }
 
-func CleanupStale(mq *mq.ProducerCreator) {
+func CleanupStale(mq *ProducerCreator) {
 	mq.Cleanup()
 	log.Printf("[Cleanup] Clear MQ stale connection and queues\n")
 }

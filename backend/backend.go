@@ -9,24 +9,24 @@ import (
 	"net/http"
 	"net/url"
 
-	"matrix.works/fmx-async-proxy/conf"
-	"matrix.works/fmx-common/messages"
+	"matrix.works/async-proxy/logger"
+	"matrix.works/async-proxy/messages"
 )
 
 func SendMessage(backend string, requestBytes []byte) error {
 
 	code, rsp, err := sendRequest(backend, requestBytes)
 	if err != nil {
-		conf.Logger.Printf("[SendMessage] sendRequest error: %s\n", err.Error())
+		logger.Logger.Printf("[SendMessage] sendRequest error: %s\n", err.Error())
 		return err
 	}
 	if code != 200 {
 		err := errors.New("Remote server is not available")
-		conf.Logger.Printf("[SendMessage] sendRequest error: %s\n", err.Error())
+		logger.Logger.Printf("[SendMessage] sendRequest error: %s\n", err.Error())
 		return err
 	}
 	if rsp.Code != 0 {
-		conf.Logger.Printf("[SendMessage] sendRequest code: %d, error: %s\n", rsp.Code, rsp.Msg)
+		logger.Logger.Printf("[SendMessage] sendRequest code: %d, error: %s\n", rsp.Code, rsp.Msg)
 		return errors.New(rsp.Msg)
 	}
 
@@ -53,7 +53,7 @@ func sendRequest(backend string, reqeustBytes []byte,
 
 	rsp, err := client.Do(req)
 	if err != nil {
-		conf.Logger.Printf("[sendRequest] Error: %s\n", err.Error())
+		logger.Logger.Printf("[sendRequest] Error: %s\n", err.Error())
 		return -1, nil, err
 	}
 	defer rsp.Body.Close()
@@ -68,7 +68,7 @@ func sendRequest(backend string, reqeustBytes []byte,
 	result := &messages.Response{}
 	err1 := json.NewDecoder(rsp.Body).Decode(result)
 	if err1 != nil {
-		conf.Logger.Println(err1)
+		logger.Logger.Println(err1)
 	}
 	//fmt.Printf(">> rsp body: %+v\n", result)
 

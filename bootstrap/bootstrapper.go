@@ -3,12 +3,7 @@ package bootstrap
 import (
 	"log"
 	"net/http"
-
-	"matrix.works/fmx-common/web/bootstrap"
 )
-
-type Bootstrapper = bootstrap.Bootstrapper
-type CommandOptions = bootstrap.CommandOptions
 
 type FapCommandOptions struct {
 	*CommandOptions
@@ -22,11 +17,11 @@ type FapBootstrapper struct {
 
 func New(
 	appName, appOwner, appVersion, appBuildNo string,
-	tokenTable map[string]string, cfgList ...bootstrap.Configurator,
+	tokenTable map[string]string, cfgList ...Configurator,
 ) *FapBootstrapper {
 
 	b := &FapBootstrapper{
-		Bootstrapper: bootstrap.New(
+		Bootstrapper: NewBootstrapper(
 			appName,
 			appOwner,
 			appVersion,

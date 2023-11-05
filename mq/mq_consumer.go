@@ -9,9 +9,9 @@ import (
 
 	"github.com/adjust/rmq/v4"
 
-	"matrix.works/fmx-async-proxy/backend"
-	"matrix.works/fmx-async-proxy/conf"
-	"matrix.works/fmx-common/mq"
+	"matrix.works/async-proxy/backend"
+	"matrix.works/async-proxy/conf"
+	"matrix.works/async-proxy/logger"
 )
 
 const (
@@ -50,15 +50,15 @@ func NewMqConsumer(
 
 func (c *MqConsumer) Consume(delivery rmq.Delivery) {
 	c.count++
-	conf.Logger.Printf("[Consume] connection %s queue %s consumed %d messages\n",
+	logger.Logger.Printf("[Consume] connection %s queue %s consumed %d messages\n",
 		*c.creator.CC.GetConnection(), c.name, c.count)
-	conf.Logger.Printf("[Consume] queue info: %+v\n", c.queueInfo)
+	logger.Logger.Printf("[Consume] queue info: %+v\n", c.queueInfo)
 
 	//fmt.Printf(">>> delivery payload: %+v\n", delivery.Payload())
 	results := make(map[string]interface{})
 	err := json.Unmarshal([]byte(delivery.Payload()), &results)
 	if err != nil {
-		conf.Logger.Printf("[Consume] Decode mq message failed: %s\n", err.Error())
+		logger.Logger.Printf("[Consume] Decode mq message failed: %s\n", err.Error())
 		return
 	}
 	//fmt.Printf(">>> results: %v\n", results)
@@ -69,13 +69,13 @@ func (c *MqConsumer) Consume(delivery rmq.Delivery) {
 	requestBytesStr := results["request"].(string)
 
 	if msgId == "" || beHost == "" || len(requestBytesStr) == 0 {
-		conf.Logger.Printf("[Consume] Have invalid parameter")
+		logger.Logger.Printf("[Consume] Have invalid parameter")
 		return
 	}
 
 	nowTs := time.Now().Unix()
 	if nowTs-msgTs > c.queueInfo.MessageTTL {
-		conf.Logger.Printf("[Consume] the message(%s) is timeout, drop it", msgId)
+		logger.Logger.Printf("[Consume] the message(%s) is timeout, drop it", msgId)
 		return
 	}
 
@@ -90,16 +90,16 @@ func (c *MqConsumer) Consume(delivery rmq.Delivery) {
 	err = backend.SendMessage(beHost, requestBytes)
 	if err == nil {
 		status = 1
-		conf.Logger.Printf("[Info] Successed to send request to backend server\n")
+		logger.Logger.Printf("[Info] Successed to send request to backend server\n")
 		if err := delivery.Ack(); err != nil {
-			conf.Logger.Printf("[Error] Ack delivery failed: %s\n", err.Error())
+			logger.Logger.Printf("[Error] Ack delivery failed: %s\n", err.Error())
 		}
 	} else {
 		status = -1
 		errmsg = err.Error()
-		conf.Logger.Printf("[Error] Failed to send request to backend server: %s\n", err.Error())
+		logger.Logger.Printf("[Error] Failed to send request to backend server: %s\n", err.Error())
 		if err := delivery.Reject(); err != nil {
-			conf.Logger.Printf("[Error] Reject delivery failed: %s\n", err.Error())
+			logger.Logger.Printf("[Error] Reject delivery failed: %s\n", err.Error())
 		}
 	}
 	fmt.Printf("[Consume] Send message, status: %d, errmsg: %s\n", status, errmsg)
@@ -108,7 +108,7 @@ func (c *MqConsumer) Consume(delivery rmq.Delivery) {
 }
 
 type MqConsumerCreator struct {
-	CC *mq.ConsumerCreator
+	CC *ConsumerCreator
 }
 
 func (c *MqConsumerCreator) Init(mqConnName string) error {
@@ -142,13 +142,16 @@ func (c *MqConsumerCreator) Init(mqConnName string) error {
 	}
 
 	var err error
-	c.CC, err = mq.NewConsumerCreator(host, port, db,
+	c.CC, err = NewConsumerCreator(host, port, db,
 		mqCfg.DefaultQueue.UnackedLimit, mqCfg.DefaultQueue.NumConsumers)
 	if err != nil {
 		return err
 	}
 
-	c.CC.Create(mqConnName, mqConsumers)
+	err = c.CC.Create(mqConnName, mqConsumers)
+	if err != nil {
+		return err
+	}
 
 	c.CC.Cleanup()
 
@@ -158,5 +161,5 @@ func (c *MqConsumerCreator) Init(mqConnName string) error {
 func (c *MqConsumerCreator) Cleanup() {
 	c.CC.StopConsuming()
 	c.CC.Cleanup()
-	conf.Logger.Printf("[MqConsumerCreator.Cleanup] Clear connections and queues")
+	logger.Logger.Printf("[MqConsumerCreator.Cleanup] Clear connections and queues")
 }

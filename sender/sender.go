@@ -1,10 +1,12 @@
 package sender
 
 import (
+	"fmt"
 	"os"
 
-	"matrix.works/fmx-async-proxy/conf"
-	"matrix.works/fmx-async-proxy/mq"
+	"matrix.works/async-proxy/conf"
+	"matrix.works/async-proxy/logger"
+	"matrix.works/async-proxy/mq"
 )
 
 var (
@@ -20,7 +22,8 @@ func Startup(appName, appOwner, version, buildNo string) {
 	cc = &mq.MqConsumerCreator{}
 	err := cc.Init(conf.Cfg.Mq.ConnectionName)
 	if err != nil {
-		println(err.Error())
+		logger.Logger.Printf("Start consumer failed: %s\n", err.Error())
+		fmt.Printf("Start consumer failed: %s\n", err.Error())
 		os.Exit(1)
 	}
 }
